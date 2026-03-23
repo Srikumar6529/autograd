@@ -1,28 +1,35 @@
-🧠 Custom Autograd Engine (NumPy Backend)
+# Mini Deep Learning Framework from Scratch (NumPy)
 
-Built a deep learning framework from scratch inspired by micrograd and PyTorch.
+Built a PyTorch-like deep learning framework from scratch with:
+- Tensor class
+- Autograd engine
+- Neural networks
+- Stable cross entropy
+- SGD optimizer
 
-🚀 Features
-Custom Tensor class
-Automatic differentiation engine
-Neural network modules (Linear, ReLU)
-Stable Cross Entropy Loss
-SGD optimizer
-MNIST training from scratch
+Trained on MNIST → **94.9% accuracy**
 
+## 📊 Results
 
-📊 Results
-Test Accuracy: 94.9% on MNIST
-No PyTorch / TensorFlow used
+| Metric | Value |
+|------|------|
+| Train Accuracy | 95% |
+| Test Accuracy | 94.9% |
 
+Trained using custom autograd engine (no PyTorch)
 
-🏗️ Architecture
-Reverse-mode autodiff (backprop)
-Computation graph tracking
-Manual gradient propagation
+## ⚙️ Autograd Engine
 
+Each Tensor stores:
+- data
+- gradient
+- parent nodes
+- backward function
 
-🔥 Key Learnings
-Numerical stability (log-sum-exp)
-Backpropagation internals
-ML systems design
+During backward():
+- traverse graph
+- apply chain rule
+- accumulate gradients
+
+results/loss.png
+results/accuracy.png
