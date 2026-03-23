@@ -49,4 +49,3 @@ Fixed using:
 - Log-Sum-Exp trick
 - Stable Cross Entropy implementation
 
-This mirrors how frameworks like PyTorch implement `CrossEntropyLoss`.

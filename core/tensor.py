@@ -8,7 +8,7 @@ class Tensor:
         self.requires_grad = requires_grad
         self._backward = lambda: None
         self._prev = set(_children)
-        self._op = _op  # for debugging
+        self._op = _op  
 
     def __repr__(self):
         return f"Tensor(data={self.data}, grad={self.grad})"
@@ -37,9 +37,6 @@ class Tensor:
         out._prev = [self]
         return out
 
-    # -------------------
-    # BACKWARD ENGINE
-    # -------------------
     def backward(self):
         topo = []
         visited = set()
@@ -59,9 +56,7 @@ class Tensor:
             if hasattr(node, "_backward"):
                 node._backward()
 
-    # -------------------
-    # OPERATIONS
-    # -------------------
+
     def __add__(self, other):
         other = other if isinstance(other, Tensor) else Tensor(other)
 
