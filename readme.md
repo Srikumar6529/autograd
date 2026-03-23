@@ -31,5 +31,22 @@ During backward():
 - apply chain rule
 - accumulate gradients
 
-results/loss.png
-results/accuracy.png
+## 📈 Training Curves
+
+### Loss Curve
+![Loss](results/loss.png)
+
+### Accuracy Curve
+![Accuracy](results/accuracy.png)
+
+## ⚠️ Numerical Stability
+
+During training, naive softmax + log caused NaN issues due to:
+- log(0)
+- floating point underflow
+
+Fixed using:
+- Log-Sum-Exp trick
+- Stable Cross Entropy implementation
+
+This mirrors how frameworks like PyTorch implement `CrossEntropyLoss`.
