@@ -1,35 +1,23 @@
 from tensor.tensor import Tensor
 from tensor.layers import *
-# Create a 2-layer network matching your exact structure
-model = Sequential([
-    Dense(n_in=4, n_out=3, activation='relu'), # Hidden layer
-    Dense(n_in=3, n_out=2, activation=None)    # Output layer emitting raw logits
-])
+# Matrix Shape: (2, 3)
+matrix = Tensor([[1., 1., 1.],
+                 [1., 1., 1.]], requires_grad=True)
 
-# Create a sample batch of 2 elements with 4 features each
-X_batch = Tensor([
-    [0.5, 1.2, -0.3, 0.8],
-    [-1.1, 0.4, 2.1, -0.5]
-])
+# Vector Shape: (1, 3) -> Broadcasted to (2, 3) in forward pass
+bias = Tensor([[10., 20., 30.]], requires_grad=True)
 
-# Create true one-hot encoded labels (e.g., sample 1 is class 0, sample 2 is class 1)
-Y_true = Tensor([
-    [1.0, 0.0],
-    [0.0, 1.0]
-])
+# Forward pass runs smoothly
+loss = matrix + bias
 
-# 1. Fire Forward Pass to collect raw model logits
-logits = model(X_batch)
+# We simulate a backprop gradient coming from a loss function
+loss.grad = np.array([[1., 1., 1.],
+                      [1., 1., 1.]], dtype=np.float32)
 
-# 2. Convert raw logits into clean probability metrics
-probabilities = logits.softmax()
+# Trigger your custom backward routine
+loss._backward()
 
-# 3. Calculate Categorical Cross Entropy Loss
-loss = probabilities.categorical_crossentropy(Y_true)
-
-print("--- Forward Pipeline Evaluation ---")
-print("Raw Logits:\n", logits.data)
-print("\nSoftmax Probabilities:\n", probabilities.data)
-print("\nFinal Categorical Cross Entropy Loss Scalar:", loss.data)
-
+print("Matrix Grad Shape:", matrix.grad.shape) # Output: (2, 3)
+print("Bias Grad Shape:",   bias.grad.shape)   # Output: (1, 3)
+print("Bias Grad Values:",   bias.grad)         # Output: [[2., 2., 2.]]
 
