@@ -1,0 +1,34 @@
+# ==============================================================================
+# 1. PYTHON AND RUNTIME CACHES
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.unittest_cache/
+
+# ==============================================================================
+# 2. LOCAL VIRTUAL ENVIRONMENTS AND PACKAGE MANAGERS
+# ==============================================================================
+# Excludes local environments where torch or numpy are installed
+.venv/
+venv/
+ENV/
+env/
+dist/
+build/
+*.egg-info/
+
+# ==============================================================================
+# 3. DEEP LEARNING ENVIRONMENT AND OS SPECIFIC JUNK
+# ==============================================================================
+# Windows, macOS, and IDE configurations
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# PyTorch, CUDA, or local logging metrics you might introduce later
+.pt/
+.pth/
+*.log
