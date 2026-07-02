@@ -177,6 +177,41 @@ class Tensor:
         
         # Pass forward the gradient tracking configuration
         return Tensor(data=relu_data, requires_grad=self.requires_grad)
+    
+    def softmax(self):
+        """
+        Applies the Softmax function along the final axis (axis=-1).
+        Uses a subtraction trick to avoid numerical overflow (nan errors).
+        """
+        # 1. Shift inputs for numerical stability (subtract max value per sample)
+        max_val = np.max(self.data, axis=-1, keepdims=True)
+        exp_data = np.exp(self.data - max_val)
+        
+        # 2. Divide by the row sums to form probabilities
+        prob_data = exp_data / np.sum(exp_data, axis=-1, keepdims=True)
+        
+        return Tensor(prob_data, requires_grad=self.requires_grad)
+
+    def categorical_crossentropy(self, targets):
+        """
+        Computes the CCE loss between this probability distribution and true targets.
+        Expects 'targets' to be a Tensor instance of one-hot encoded labels.
+        """
+        if not isinstance(targets, Tensor):
+            targets = Tensor(targets)
+            
+        # Clip probabilities to avoid taking log(0) which outputs NaN or -Inf
+        eps = 1e-15
+        clipped_preds = np.clip(self.data, eps, 1.0 - eps)
+        
+        # Cross entropy core math: -sum(y_true * log(y_pred))
+        loss_per_sample = -np.sum(targets.data * np.log(clipped_preds), axis=-1)
+        
+        # Average the loss across the entire batch of samples
+        mean_loss = np.mean(loss_per_sample)
+        
+        return Tensor(mean_loss, requires_grad=self.requires_grad or targets.requires_grad)
+
 
 
 
