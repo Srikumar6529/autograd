@@ -5,7 +5,7 @@ import torch
 # Import your custom tensor and mockup framework structures
 # Adjust these imports if your file structure is different
 from tensor.tensor import Tensor
-from model_mockup import Sequential, Dense
+from tensor.layers import Sequential, Dense
 
 class TestCustomTensorEngine(unittest.TestCase):
     

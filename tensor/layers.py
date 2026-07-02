@@ -11,7 +11,7 @@ class Layer:
 class Dense(Layer):
     def __init__(self,n_in,n_out,activation):
         super().__init__()
-        self.weights = Tensor(np.random.randn(n_in, n_out)*0.01, requires_grad=True)
+        self.weights = Tensor(np.random.randn(n_in, n_out)*0.05, requires_grad=True)
         self.bias = Tensor(np.zeros((1,n_out)),requires_grad=True)
         self.act_fn = activation
         self.params = [self.weights,self.bias]

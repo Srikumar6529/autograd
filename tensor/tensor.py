@@ -3,6 +3,7 @@ import numpy as np
 class Tensor:
     def __init__(self, data, requires_grad=False,_parents = None):
         self.data = np.array(data, dtype=np.float32)
+        self.dtype = self.data.dtype
         self.shape = self.data.shape
         self.requires_grad = requires_grad
         self.grad = np.zeros_like(self.data,dtype=np.float32) if requires_grad else None
