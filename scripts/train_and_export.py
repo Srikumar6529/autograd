@@ -2,7 +2,7 @@ import numpy as np
 from tensor.tensor import Tensor
 from tensor.layers import Sequential, Dense
 from tensor.optim import SGD, evaluate_accuracy
-from data_loader import load_mnist, get_mini_batches
+from scripts.data_loader import load_mnist, get_mini_batches
 
 # 1. LOAD THE ENTIRE MNIST ENVIRONMENT
 x_train, y_train, x_test, y_test = load_mnist()
