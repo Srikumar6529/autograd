@@ -1,192 +1,243 @@
-# Autograd Engine
+# Autograd
 
-A lightweight deep learning framework built from scratch using **NumPy**.
+> A lightweight deep learning framework built entirely from scratch using **NumPy**.
 
-This project implements reverse-mode automatic differentiation, tensor operations, neural network layers, SGD optimization, gradient accumulation, and complete training loops without relying on PyTorch or TensorFlow for the actual learning engine.
+Autograd is a custom deep learning framework that implements **reverse-mode automatic differentiation** for tensors and uses it to train neural networks without relying on machine learning frameworks such as PyTorch or TensorFlow.
 
-The goal of this project is to understand what happens inside frameworks like PyTorch when you call `loss.backward()` and `optimizer.step()`.
-
-![Demo](assets/demo.gif)
+The goal of this project is to understand and implement the fundamental building blocks behind modern deep learning libraries, including computational graphs, automatic differentiation, neural network layers, optimization algorithms, and end-to-end model training.
 
 ---
 
-## What this project demonstrates
+## Features
 
-- Reverse-mode automatic differentiation
-- Dynamic computation graph construction
-- Tensor operations with gradient propagation
-- Broadcasting-aware backpropagation
-- Matrix multiplication gradients
-- Activation functions
-- Softmax and categorical cross-entropy loss
-- Dense neural network layers
-- SGD optimizer
-- End-to-end neural network training
-- MNIST training example
-- PyTorch-style API design at a small educational scale
+* Reverse-mode automatic differentiation
+* Dynamic computational graph construction
+* Broadcasting-aware gradient propagation
+* Matrix multiplication and tensor operations
+* Tensor reshaping and reduction operations
+* ReLU activation
+* Softmax activation
+* Cross Entropy Loss
+* Dense (Fully Connected) layers
+* Sequential model API
+* Stochastic Gradient Descent (SGD) optimizer
+* Gradient validation against PyTorch
+* End-to-end MNIST handwritten digit classification example
 
 ---
 
-## Project structure
+# Project Structure
 
 ```text
 autograd/
-├── demo.py                    # Small XOR demo runnable from the root
-├── requirements.txt
+│
 ├── tensor/
-│   ├── tensor.py              # Core Tensor class and autograd engine
-│   ├── layers.py              # Layer, Dense, Sequential
-│   ├── optim.py               # SGD optimizer and accuracy helper
-│   └── __init__.py
+│   ├── tensor.py          # Tensor implementation & autograd engine
+│   ├── layers.py          # Neural network layers
+│   ├── loss.py            # Loss functions
+│   ├── optim.py           # SGD optimizer
+│   └── ...
+│
+├── tests/                 # Gradient validation tests
+│
 ├── scripts/
-│   ├── data_loader.py         # MNIST download/preprocessing helpers
-│   └── train_and_export.py    # MNIST training example
-└── tests/
-    └── test_tensor.py         # Add gradient/unit tests here
+│   └── mnist.py           # MNIST training example
+│
+├── demo.py                # Quick project demonstration
+│
+└── README.md
 ```
 
 ---
 
-## Quick start
+# Architecture
+
+```text
+Input Tensor
+      │
+      ▼
+Tensor Operations
+      │
+      ▼
+Dynamic Computational Graph
+      │
+      ▼
+Backward Pass
+      │
+      ▼
+Automatic Gradient Computation
+      │
+      ▼
+SGD Optimizer
+      │
+      ▼
+Updated Parameters
+```
+
+---
+
+# Supported Components
+
+| Category                               | Status |
+| -------------------------------------- | :----: |
+| Tensor Operations                      |    ✅   |
+| Broadcasting                           |    ✅   |
+| Matrix Multiplication                  |    ✅   |
+| Reverse-Mode Automatic Differentiation |    ✅   |
+| ReLU                                   |    ✅   |
+| Softmax                                |    ✅   |
+| Cross Entropy Loss                     |    ✅   |
+| Dense Layers                           |    ✅   |
+| Sequential Model                       |    ✅   |
+| SGD Optimizer                          |    ✅   |
+| MNIST Training                         |    ✅   |
+
+---
+
+# Quick Start
+
+Clone the repository
 
 ```bash
 git clone https://github.com/Srikumar6529/autograd.git
 cd autograd
-pip install -r requirements.txt
+```
+
+Install dependencies
+
+```bash
+pip install numpy
+```
+
+Run the demo
+
+```bash
 python demo.py
 ```
 
-Expected output:
+---
+
+# Demo
+
+The demo trains a fully connected neural network on a subset of the **MNIST handwritten digit dataset** using only this custom automatic differentiation engine.
+
+The demonstration includes:
+
+* Forward propagation
+* Backward propagation
+* Automatic gradient computation
+* SGD optimization
+* Training loop
+* Accuracy evaluation
+* Sample predictions
+* Gradient statistics
+
+Example output:
 
 ```text
-AUTOGRAD ENGINE DEMO
-Training a tiny neural network on XOR using only NumPy + this engine
-Epoch 001 | loss=...
-Epoch 800 | loss=... | accuracy=100.00%
+========================================================================
+AUTOGRAD ENGINE DEMO: HANDWRITTEN DIGIT CLASSIFICATION
+Training a neural network using only NumPy + this custom autograd engine
+========================================================================
+
+Dataset: MNIST
+
+Train shape: (2000, 784)
+Test shape : (500, 784)
+
+Model
+784 → 64 → ReLU → 10 → Softmax
+
+Epoch 01/5 | loss=1.7750 | train_acc=78.20% | test_acc=66.20%
+Epoch 02/5 | loss=0.9951 | train_acc=85.60% | test_acc=72.40%
+Epoch 03/5 | loss=0.6916 | train_acc=88.00% | test_acc=78.20%
+Epoch 04/5 | loss=0.5525 | train_acc=89.40% | test_acc=80.80%
+Epoch 05/5 | loss=0.4767 | train_acc=90.20% | test_acc=82.60%
+
+Sample Predictions
+
+7 ✓
+2 ✓
+1 ✓
+0 ✓
+4 ✓
+1 ✓
+4 ✓
+9 ✓
+
+Gradient Statistics
+
+First Layer Weight Shape : (784, 64)
+Gradient Shape           : (784, 64)
+
+Gradient Mean            : -0.00031
+Gradient Std             : 0.01428
+Gradient Max             : 0.13754
+Gradient Min             : -0.12218
+Gradient L2 Norm         : 3.48
 ```
+
+> **Note:** The exact numerical values may vary between runs due to random weight initialization.
 
 ---
 
-## Demo: training XOR from scratch
+# Demo GIF
 
-`demo.py` trains a small neural network on the XOR problem using only this custom autograd engine.
-
-```python
-from tensor import Dense, SGD, Sequential, Tensor
-
-model = Sequential([
-    Dense(n_in=2, n_out=8, activation="relu"),
-    Dense(n_in=8, n_out=2, activation=None),
-])
-
-optimizer = SGD(model.layers, lr=0.1)
-
-logits = model(X)
-probs = logits.softmax()
-loss = probs.categorical_crossentropy(y)
-loss.backward()
-optimizer.step()
-```
-
-This shows the full deep learning loop:
-
-```text
-Forward pass -> Loss computation -> Backward pass -> Parameter update
-```
+<p align="center">
+  <img src="assets/demo.gif" width="850">
+</p>
 
 ---
 
-## MNIST training example
+# Testing
 
-The `scripts/train_and_export.py` file trains a fully connected neural network on MNIST.
+Gradient correctness is validated by comparing gradients produced by this engine against **PyTorch**.
+
+Run all tests:
 
 ```bash
-python scripts/train_and_export.py
+python -m unittest discover tests
 ```
 
-The script downloads MNIST, normalizes the images, one-hot encodes labels, trains a multilayer neural network, and evaluates final accuracy.
+The test suite verifies:
 
-Architecture:
-
-```text
-784 input features -> Dense(64, ReLU) -> Dense(16, ReLU) -> Dense(10) -> Softmax
-```
-
----
-
-## Core components
-
-### Tensor
-
-The `Tensor` class stores:
-
-- raw NumPy data
-- gradient values
-- parent tensors
-- backward functions
-- graph traversal logic
-
-Calling `backward()` builds a topological ordering of the computation graph and applies the chain rule in reverse.
-
-### Layers
-
-Implemented neural network abstractions:
-
-- `Layer`
-- `Dense`
-- `Sequential`
-
-### Optimizer
-
-Implemented optimizer:
-
-- `SGD`
-
-The optimizer updates parameters using:
-
-```text
-parameter = parameter - learning_rate * gradient
-```
+* Tensor operations
+* Broadcasting behavior
+* Matrix multiplication
+* Automatic differentiation
+* Gradient correctness
 
 ---
 
-## Feature comparison
+# Motivation
 
-| Feature | This Engine | PyTorch |
-|---|---:|---:|
-| Tensor object | ✅ | ✅ |
-| Reverse-mode autograd | ✅ | ✅ |
-| Dynamic computation graph | ✅ | ✅ |
-| Broadcasting gradients | ✅ | ✅ |
-| Matrix multiplication | ✅ | ✅ |
-| ReLU | ✅ | ✅ |
-| Softmax | ✅ | ✅ |
-| Cross-entropy loss | ✅ | ✅ |
-| Dense layers | ✅ | ✅ |
-| SGD optimizer | ✅ | ✅ |
-| CNN layers | ❌ | ✅ |
-| GPU acceleration | ❌ | ✅ |
+Deep learning frameworks provide powerful abstractions, but they also hide many of the algorithms that make them work.
+
+This project rebuilds those components from first principles to develop a deeper understanding of:
+
+* Computational graphs
+* Reverse-mode automatic differentiation
+* Backpropagation
+* Neural network training
+* Gradient-based optimization
+
+Rather than treating frameworks like PyTorch as black boxes, this project demonstrates how they work internally.
 
 ---
 
-## Resume bullet
+# Future Improvements
 
-> Built a NumPy-based automatic differentiation engine with 15+ tensor operations, broadcasting-aware backpropagation, dense neural network layers, SGD optimization, and end-to-end MNIST/XOR training demos, enabling framework-level understanding of reverse-mode autodiff and neural network training internals.
+* [ ] Adam Optimizer
+* [ ] Batch Normalization
+* [ ] Dropout
+* [ ] Convolution Layers (Conv2D)
+* [ ] Max Pooling
+* [ ] CUDA Backend
+* [ ] Mixed Precision Training
+* [ ] Transformer Layers
 
 ---
 
-## Why I built this
+# License
 
-I wanted to move beyond using deep learning libraries as black boxes and understand the mechanics behind automatic differentiation, gradient flow, neural network layers, and optimization. Building this project helped me understand how modern deep learning frameworks connect mathematical operations into a computation graph and use backpropagation to train models.
-
----
-
-## Future work
-
-- Add PyTorch gradient parity tests for every operation
-- Add Adam optimizer
-- Add Conv2D and MaxPool layers
-- Add model save/load utilities
-- Add type hints and docstrings across the full engine
-- Add more examples beyond MNIST and XOR
-
+This project is released under the MIT License.
